@@ -1,0 +1,474 @@
+:root {
+    --primary-color: #2563eb;
+    --primary-hover: #1d4ed8;
+    --bg-gradient: linear-gradient(135deg, #dbeafe, #f0f9ff, #e0f2fe);
+    --card-bg: rgba(255, 255, 255, 0.7);
+    --text-color: #1e293b;
+    --text-muted: #64748b;
+    --border-color: #e2e8f0;
+    --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.1);
+    --radius: 16px;
+}
+
+/* ================= GLOBAL ================= */
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+
+    background: linear-gradient(135deg, #dbeafe, #f0f9ff, #e0f2fe);
+    background-size: 300% 300%;
+    animation: gradientMove 12s ease infinite;
+
+    color: var(--text-color);
+    min-height: 100vh;
+
+    padding: 2rem;
+
+    position: relative;
+}
+
+@keyframes gradientMove {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+/* ================= CONTAINER ================= */
+
+.container {
+    width: 100%;
+    max-width: 900px;
+    margin: 2rem auto;   /* 🔥 THIS centers it perfectly */
+
+    background: var(--card-bg);
+    backdrop-filter: blur(18px);
+    border-radius: 20px;
+    box-shadow: var(--shadow-md);
+    padding: 2.5rem;
+    border: 1px solid rgba(255,255,255,0.4);
+}
+
+.container:hover {
+    transform: translateY(-3px);
+}
+
+/* ================= HEADER ================= */
+
+header {
+    text-align: center;
+    margin-bottom: 2.5rem;
+}
+
+header h1 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin-bottom: .5rem;
+    background: linear-gradient(45deg,#2563eb,#7c3aed);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+header p {
+    color: var(--text-muted);
+}
+
+/* ================= FORM ================= */
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill,minmax(220px,1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+label {
+    font-size: .85rem;
+    font-weight: 500;
+    margin-bottom: .4rem;
+}
+
+/* Inputs animation */
+input, select {
+    padding: .75rem;
+    border: 1px solid var(--border-color);
+    border-radius: 10px;
+    font-size: .95rem;
+    background: #fff;
+    transition: all 0.25s ease;
+}
+
+input:focus,
+select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(37,99,235,.15);
+    transform: scale(1.02);
+}
+
+/* ================= BUTTON ================= */
+
+button {
+    background: linear-gradient(135deg, #2563eb, #7c3aed);
+    color: white;
+    border: none;
+    padding: 1rem;
+    font-size: 1rem;
+    font-weight: 600;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 5px 15px rgba(37,99,235,0.3);
+    width: 100%;
+}
+
+button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(37,99,235,0.4);
+}
+
+button:active {
+    transform: scale(0.97);
+}
+
+button:disabled {
+    background: var(--text-muted);
+    cursor: not-allowed;
+}
+
+/* ================= TEST BUTTONS ================= */
+
+.test-data-section {
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.test-data-section h3 {
+    font-size: .95rem;
+    color: var(--text-muted);
+    margin-bottom: .8rem;
+}
+
+/* 🔥 CHANGE HERE */
+.test-buttons {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr); /* 3 in one row */
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+/* Button styling */
+.test-btn {
+    width: 100%;
+    padding: 0.7rem;
+    font-size: 0.9rem;
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+    background: white;
+    cursor: pointer;
+    transition: all 0.25s ease;
+}
+
+/* Hover animation */
+.test-btn:hover {
+    transform: translateY(-3px) scale(1.02);
+    box-shadow: 0 8px 18px rgba(0,0,0,0.1);
+}
+
+/* High Risk */
+.test-btn.positive {
+    color: #ef4444;
+    border-color: #fecaca;
+    background: #fef2f2;
+}
+
+/* Low Risk */
+.test-btn.negative {
+    color: #10b981;
+    border-color: #a7f3d0;
+    background: #ecfdf5;
+}
+
+/* 📱 Mobile fix */
+@media (max-width: 600px) {
+    .test-buttons {
+        grid-template-columns: 1fr; /* stack on small screens */
+    }
+}
+/* ================= RESULT CARD ================= */
+
+.result-card {
+    background: white;
+    border-radius: var(--radius);
+    padding: 2rem;
+    margin-top: 2rem;
+    border: 1px solid var(--border-color);
+    box-shadow: var(--shadow-md);
+    animation: slideUp .5s ease;
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.result-heading {
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+/* ================= RISK METER ================= */
+
+.risk-meter {
+    width: 100%;
+    background: #e2e8f0;
+    border-radius: 999px;
+    overflow: hidden;
+    height: 28px;
+    margin: 1rem 0 1.4rem 0;
+}
+
+.risk-bar {
+    height: 100%;
+    width: 0%;
+    text-align: center;
+    color: white;
+    font-size: .85rem;
+    font-weight: 600;
+    line-height: 28px;
+    border-radius: 999px;
+    transition: width 1s ease;
+}
+
+/* ================= RESULT TEXT ================= */
+
+.result-summary {
+    text-align: center;
+    margin-bottom: 1.4rem;
+}
+
+#predictionText {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: .3rem;
+}
+
+#probabilityText {
+    font-size: .95rem;
+    color: var(--text-muted);
+}
+
+/* ================= AI ANALYSIS ================= */
+
+.analysis-section {
+    margin-top: 1.4rem;
+}
+
+.analysis-section h3 {
+    font-size: 1.1rem;
+    margin-bottom: .7rem;
+    color: var(--primary-color);
+}
+
+.analysis-box {
+    background: #f8fafc;
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.3rem 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.analysis-box:hover {
+    transform: scale(1.01);
+    box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+}
+
+.analysis-box h4 {
+    margin-top: 1rem;
+    margin-bottom: 0.6rem;
+    font-size: 1rem;
+    border-left: 4px solid var(--primary-color);
+    padding-left: 8px;
+}
+
+.analysis-box ul {
+    padding-left: 1.3rem;
+    margin-top: 0.4rem;
+    margin-bottom: 1rem;
+}
+
+.analysis-box li {
+    margin-bottom: 0.5rem;
+    font-size: .95rem;
+    line-height: 1.5;
+}
+
+/* ================= NAV LINK ================= */
+
+.nav-link {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.nav-link:hover {
+    text-decoration: underline;
+}
+
+/* ================= LOADER ================= */
+
+.loader p {
+    margin-top: 10px;
+    color: var(--text-muted);
+}
+
+/* ================= UTILITIES ================= */
+
+.hidden {
+    display: none;
+}
+
+/* ================= MOBILE ================= */
+
+@media (max-width:600px) {
+
+.container {
+    padding:1.5rem;
+}
+
+.form-grid {
+    grid-template-columns:1fr;
+}
+
+}
+/* ================= RISK BADGE ================= */
+
+.risk-badge {
+    text-align: center;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    display: inline-block;
+}
+
+/* ================= SUMMARY ================= */
+
+.summary-section {
+    margin-top: 1.5rem;
+}
+
+.summary-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.summary-item {
+    background: #f8fafc;
+    padding: 10px;
+    border-radius: 10px;
+    border: 1px solid var(--border-color);
+    font-size: 0.85rem;
+}
+
+.summary-item span {
+    display: block;
+    font-weight: 600;
+}
+
+/* ================= KEY FACTORS ================= */
+
+.key-factors {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 10px;
+}
+
+.factor-badge {
+    padding: 6px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.factor-high {
+    background: #fee2e2;
+    color: #b91c1c;
+}
+
+.factor-medium {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.factor-good {
+    background: #dcfce7;
+    color: #065f46;
+}
+/* 🔥 Floating Glow Circles */
+
+body::before,
+body::after {
+    content: "";
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    z-index: 0;
+}
+
+/* Blue glow */
+body::before {
+    width: 400px;
+    height: 400px;
+    background: #60a5fa;
+    top: -100px;
+    left: -100px;
+    opacity: 0.4;
+}
+
+/* Purple glow */
+body::after {
+    width: 350px;
+    height: 350px;
+    background: #a78bfa;
+    bottom: -100px;
+    right: -100px;
+    opacity: 0.4;
+}
+/* subtle grid pattern */
+
+body::after {
+    background:
+        radial-gradient(circle at 20% 20%, rgba(167,139,250,0.4), transparent),
+        linear-gradient(rgba(255,255,255,0.2) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.2) 1px, transparent 1px);
+
+    background-size: 100% 100%, 40px 40px, 40px 40px;
+}
+body {
+    overflow-x: hidden;
+}

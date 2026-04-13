@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Heart Failure Prediction</title>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+.risk-meter {
+    width: 100%;
+    background: #e2e8f0;
+    border-radius: 30px;
+    overflow: hidden;
+    margin-top: 15px;
+}
+
+.risk-bar {
+    height: 30px;
+    width: 0%;
+    text-align: center;
+    color: white;
+    font-weight: 600;
+    line-height: 30px;
+    border-radius: 30px;
+    transition: width 1s ease;
+}
+
+.loader {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid #e2e8f0;
+    border-top: 4px solid #2563eb;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: auto;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<header class="page-header">
+    <a href="/" class="nav-link">← Back</a>
+    <h1>❤️ Heart Failure Prediction</h1>
+    <p>Enter patient clinical data to estimate survival risk.</p>
+</header>
+
+<section class="test-data-section">
+    <h3>⚡ Quick Test Data</h3>
+    <div class="test-buttons">
+        <button type="button" class="test-btn positive" onclick="fillForm(testData.positive[0])">High Risk 1</button>
+        <button type="button" class="test-btn positive" onclick="fillForm(testData.positive[1])">High Risk 2</button>
+        <button type="button" class="test-btn negative" onclick="fillForm(testData.negative[0])">Low Risk</button>
+    </div>
+</section>
+
+<main>
+
+<div class="form-card">
+
+<form id="predictionForm">
+
+<div class="form-grid">
+
+<div class="form-group">
+<label>Age</label>
+<input type="number" id="age" name="age" required min="18" max="100" placeholder="e.g. 60">
+</div>
+
+<div class="form-group">
+<label>Anaemia</label>
+<select id="anaemia" name="anaemia">
+<option value="0">No</option>
+<option value="1">Yes</option>
+</select>
+</div>
+
+<div class="form-group">
+<label>CPK</label>
+<input type="number" id="creatinine_phosphokinase" name="creatinine_phosphokinase" min="0" placeholder="e.g. 582">
+</div>
+
+<div class="form-group">
+<label>Diabetes</label>
+<select id="diabetes" name="diabetes">
+<option value="0">No</option>
+<option value="1">Yes</option>
+</select>
+</div>
+
+<div class="form-group">
+<label>Ejection Fraction</label>
+<input type="number" id="ejection_fraction" name="ejection_fraction" min="0" max="100" placeholder="e.g. 38">
+</div>
+
+<div class="form-group">
+<label>High Blood Pressure</label>
+<select id="high_blood_pressure" name="high_blood_pressure">
+<option value="0">No</option>
+<option value="1">Yes</option>
+</select>
+</div>
+
+<div class="form-group">
+<label>Platelets</label>
+<input type="number" id="platelets" name="platelets" min="0" step="100" placeholder="e.g. 263358">
+</div>
+
+<div class="form-group">
+<label>Serum Creatinine</label>
+<input type="number" id="serum_creatinine" name="serum_creatinine" step="0.1" min="0" placeholder="e.g. 1.2">
+</div>
+
+<div class="form-group">
+<label>Serum Sodium</label>
+<input type="number" id="serum_sodium" name="serum_sodium" min="0" placeholder="e.g. 137">
+</div>
+
+<div class="form-group">
+<label>Sex</label>
+<select id="sex" name="sex">
+<option value="1">Male</option>
+<option value="0">Female</option>
+</select>
+</div>
+
+<div class="form-group">
+<label>Smoking</label>
+<select id="smoking" name="smoking">
+<option value="0">No</option>
+<option value="1">Yes</option>
+</select>
+</div>
+
+<div class="form-group">
+<label>Follow-up Time</label>
+<input type="number" id="time" name="time" min="0" placeholder="e.g. 130">
+</div>
+
+</div>
+
+<button type="submit" id="predictBtn">
+🚀 Predict Risk
+</button>
+
+</form>
+
+</div>
+
+<div id="loader" class="loader hidden">
+    <div class="spinner"></div>
+    <p>Analyzing patient data...</p>
+</div>
+
+<div id="resultArea" class="result-card hidden">
+
+<h2 class="result-heading">📊 Prediction Result</h2>
+
+<div class="risk-badge" id="riskBadge">Low Risk</div>
+
+<div class="risk-meter">
+    <div id="riskBar" class="risk-bar">0%</div>
+</div>
+
+<div class="result-summary">
+    <h3 id="predictionText"></h3>
+    <p id="probabilityText"></p>
+</div>
+
+<div class="summary-section">
+    <h3>🧾 Patient Summary</h3>
+    <div id="summaryGrid" class="summary-grid"></div>
+</div>
+
+<div class="analysis-section">
+    <h3>🎯 Key Risk Factors</h3>
+    <div id="keyFactors" class="key-factors"></div>
+</div>
+
+<div class="analysis-section">
+    <h3>🧠 AI Analysis & Suggestions</h3>
+    <div id="aiAnalysisContent" class="analysis-box"></div>
+</div>
+
+<button id="downloadBtn" class="predict-btn" style="margin-top:15px;">
+📄 Download Report
+</button>
+
+</div>
+
+</main>
+
+</div>
+
+
+<script>
+
+const testData = {
+positive: [
+{ age:75, anaemia:0, creatinine_phosphokinase:582, diabetes:0, ejection_fraction:20, high_blood_pressure:1, platelets:265000, serum_creatinine:1.9, serum_sodium:130, sex:1, smoking:0, time:4 },
+{ age:55, anaemia:0, creatinine_phosphokinase:7861, diabetes:0, ejection_fraction:38, high_blood_pressure:0, platelets:263300, serum_creatinine:1.1, serum_sodium:136, sex:1, smoking:0, time:6 }
+],
+negative: [
+{ age:53, anaemia:0, creatinine_phosphokinase:63, diabetes:1, ejection_fraction:60, high_blood_pressure:0, platelets:368000, serum_creatinine:0.8, serum_sodium:135, sex:1, smoking:0, time:22 }
+]
+};
+
+/* ================= VALUE FORMATTER ================= */
+function formatValue(key, value){
+
+    if(key === "sex"){
+        return value == 1 ? "Male" : "Female";
+    }
+
+    if(["smoking","diabetes","anaemia","high_blood_pressure"].includes(key)){
+        return value == 1 ? "Yes" : "No";
+    }
+
+    return value;
+}
+
+/* ================= LABEL FORMATTER ================= */
+function formatLabel(key){
+    const map = {
+        age: "Age",
+        anaemia: "Anaemia",
+        creatinine_phosphokinase: "CPK",
+        diabetes: "Diabetes",
+        ejection_fraction: "Ejection Fraction",
+        high_blood_pressure: "Blood Pressure",
+        platelets: "Platelets",
+        serum_creatinine: "Creatinine",
+        serum_sodium: "Sodium",
+        sex: "Sex",
+        smoking: "Smoking",
+        time: "Follow-up Time"
+    };
+
+    return map[key] || key.toUpperCase();
+}
+
+/* ================= FILL FORM ================= */
+function fillForm(data){
+    for(let key in data){
+        document.getElementById(key).value = data[key];
+    }
+}
+
+/* ================= FORM SUBMIT ================= */
+document.getElementById('predictionForm').addEventListener('submit', async function(e){
+
+e.preventDefault();
+
+/* Show loader */
+document.getElementById('loader').classList.remove('hidden');
+document.getElementById('resultArea').classList.add('hidden');
+
+const btn = document.getElementById('predictBtn');
+btn.disabled = true;
+btn.innerText = "Analyzing...";
+
+/* Get form data */
+const formData = new FormData(this);
+const data = Object.fromEntries(formData.entries());
+window.lastInputData = data;
+
+try{
+
+const res = await fetch('/predict',{
+method:'POST',
+headers:{'Content-Type':'application/json'},
+body:JSON.stringify(data)
+});
+
+const result = await res.json();
+window.lastResult = result;
+
+/* Show result */
+document.getElementById('loader').classList.add('hidden');
+document.getElementById('resultArea').classList.remove('hidden');
+
+/* ================= RISK METER ================= */
+let prob = (result.probability * 100).toFixed(1);
+let bar = document.getElementById('riskBar');
+let badge = document.getElementById('riskBadge');
+
+bar.style.width = "0%";
+
+setTimeout(()=>{
+    bar.style.width = prob + "%";
+    bar.innerText = prob + "%";
+},100);
+
+/* ================= RISK LEVEL ================= */
+if(prob > 70){
+    bar.style.background = "red";
+    badge.innerText = "🔴 High Risk";
+    badge.style.background = "#fee2e2";
+    badge.style.color = "#b91c1c";
+}
+else if(prob > 40){
+    bar.style.background = "orange";
+    badge.innerText = "🟡 Moderate Risk";
+    badge.style.background = "#fef3c7";
+    badge.style.color = "#92400e";
+}
+else{
+    bar.style.background = "green";
+    badge.innerText = "🟢 Low Risk";
+    badge.style.background = "#dcfce7";
+    badge.style.color = "#065f46";
+}
+
+/* ================= TEXT RESULT ================= */
+let text = document.getElementById('predictionText');
+
+if(result.prediction === 1){
+    text.innerHTML = "⚠ High Risk Patient";
+    text.style.color = "red";
+}
+else{
+    text.innerHTML = "✅ Low Risk Patient";
+    text.style.color = "green";
+}
+
+document.getElementById('probabilityText').innerText = "Probability: " + prob + "%";
+
+/* ================= PATIENT SUMMARY (UPDATED) ================= */
+const summaryGrid = document.getElementById("summaryGrid");
+summaryGrid.innerHTML = "";
+
+for(let key in data){
+
+    let label = formatLabel(key);
+    let value = formatValue(key, data[key]);
+
+    summaryGrid.innerHTML += `
+        <div class="summary-item">
+            <span>${label}</span>
+            <strong>${value}</strong>
+        </div>
+    `;
+}
+
+/* ================= KEY FACTORS ================= */
+const factors = document.getElementById("keyFactors");
+factors.innerHTML = "";
+
+if(data.ejection_fraction < 40)
+    factors.innerHTML += `<div class="factor-badge factor-high">Low Ejection Fraction</div>`;
+
+if(data.serum_creatinine > 1.2)
+    factors.innerHTML += `<div class="factor-badge factor-high">High Creatinine</div>`;
+
+if(data.serum_sodium < 135)
+    factors.innerHTML += `<div class="factor-badge factor-medium">Low Sodium</div>`;
+
+if(data.smoking == 1)
+    factors.innerHTML += `<div class="factor-badge factor-high">Smoking</div>`;
+
+if(data.diabetes == 1)
+    factors.innerHTML += `<div class="factor-badge factor-medium">Diabetes</div>`;
+
+if(data.high_blood_pressure == 1)
+    factors.innerHTML += `<div class="factor-badge factor-medium">High BP</div>`;
+
+if(factors.innerHTML === ""){
+    factors.innerHTML = `<div class="factor-badge factor-good">All parameters look normal</div>`;
+}
+
+/* ================= AI ANALYSIS ================= */
+document.getElementById('aiAnalysisContent').innerHTML = result.analysis;
+
+}catch(err){
+alert("Error occurred");
+}
+
+/* Reset button */
+btn.disabled = false;
+btn.innerText = "🚀 Predict Risk";
+
+});
+
+/* ================= PDF DOWNLOAD ================= */
+document.getElementById('downloadBtn').addEventListener('click', async function(){
+
+if(!window.lastResult){
+alert("Run prediction first!");
+return;
+}
+
+/* 🔥 GET CURRENT FORM DATA AGAIN */
+const formData = new FormData(document.getElementById('predictionForm'));
+const inputData = Object.fromEntries(formData.entries());
+
+const response = await fetch('/download-report', {
+method:'POST',
+headers:{'Content-Type':'application/json'},
+body: JSON.stringify({
+    ...window.lastResult,
+    input_data: window.lastInputData   // ADD THIS
+})
+});
+
+const blob = await response.blob();
+const url = window.URL.createObjectURL(blob);
+
+const a = document.createElement('a');
+a.href = url;
+a.download = "Heart_Report.pdf";
+a.click();
+
+});
+</script>
+
+</body>
+</html>
